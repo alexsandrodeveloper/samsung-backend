@@ -25,10 +25,10 @@ import br.com.samsung.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @Api(tags = "AuthenticationEndpoint")
 @RestController
-@RequestMapping(value = "/auth")
+@RequestMapping(value = "/api/auth")
 public class AuthController {
 
 	@Autowired

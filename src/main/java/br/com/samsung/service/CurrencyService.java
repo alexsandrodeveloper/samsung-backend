@@ -152,7 +152,7 @@ public class CurrencyService {
 		return buscarListaResultadoVO();
 	}
 
-	public List<ResultadoVO> buscarListaResultadoVO() {
+	private List<ResultadoVO> buscarListaResultadoVO() {
 
 		List<ResultadoVO> resultados = new ArrayList<ResultadoVO>();
 
@@ -177,12 +177,14 @@ public class CurrencyService {
 				}
 			}
 
-			resultado.setCotacaoToCurrencyCodeUSD(
-					vlCotacaoUSD != null ? formatarValor(vlCotacaoUSD) : documento.getDocumentValue());
-			resultado.setCotacaoToCurrencyCodePEN(
-					vlCotacaoPEN != null ? formatarValor(vlCotacaoPEN) : documento.getDocumentValue());
-			resultado.setCotacaoToCurrencyCodeBRL(
-					vlCotacaoBRL != null ? formatarValor(vlCotacaoBRL) : documento.getDocumentValue());
+			if (!cotacoes.isEmpty()) {
+				resultado.setCotacaoToCurrencyCodeUSD(
+						vlCotacaoUSD != null ? formatarValor(vlCotacaoUSD) : documento.getDocumentValue());
+				resultado.setCotacaoToCurrencyCodePEN(
+						vlCotacaoPEN != null ? formatarValor(vlCotacaoPEN) : documento.getDocumentValue());
+				resultado.setCotacaoToCurrencyCodeBRL(
+						vlCotacaoBRL != null ? formatarValor(vlCotacaoBRL) : documento.getDocumentValue());
+			}
 
 			resultados.add(resultado);
 

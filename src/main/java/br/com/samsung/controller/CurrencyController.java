@@ -1,12 +1,15 @@
 package br.com.samsung.controller;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.samsung.data.vo.v1.CurrencyVO;
@@ -16,7 +19,7 @@ import br.com.samsung.service.CurrencyService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @Api(value = "Currency Endpoint", tags = "CurrencyEndpoint")
 @RestController
 @RequestMapping(value = "/api/evaluation/v1")
@@ -26,22 +29,47 @@ public class CurrencyController {
 	private CurrencyService services;
 
 	@ApiOperation(value = "Find all currencies record")
-	@GetMapping(value = "/currency" ,produces = { "application/json", "application/xml", "application/x-yaml" })
+	@GetMapping(value = "/currency", produces = { "application/json", "application/xml", "application/x-yaml" })
 	public List<CurrencyVO> findAll() {
 		List<CurrencyVO> listCurrencyVO = this.services.findCurrencies();
 		return listCurrencyVO;
 	}
-	
+
 	@ApiOperation(value = "Find all result record")
-	@GetMapping(value = "/resultados" ,produces = { "application/json", "application/xml", "application/x-yaml" })
+	@GetMapping(value = "/resultados", produces = { "application/json", "application/xml", "application/x-yaml" })
 	public List<ResultadoVO> findAllResultados() {
-		List<ResultadoVO> listCurrencyVO = this.services.buscarListaResultadoVO();
+		List<ResultadoVO> listCurrencyVO = this.services.filtrarPorCriterios(new FiltroVO());
 		return listCurrencyVO;
 	}
-	
+
 	@ApiOperation(value = "Buscar por filtro")
-	@GetMapping(value = "/resultados/filtrar" ,produces = { "application/json", "application/xml", "application/x-yaml" })
-	public List<ResultadoVO> filtrarResultados(@RequestBody FiltroVO filtroVO) {
+	@GetMapping(value = "/resultados/filtrar" , consumes = {"application/json", "application/xml", "application/x-yaml"}
+											  , produces = { "application/json", "application/xml", "application/x-yaml" })
+	public List<ResultadoVO> filtrarResultados(@RequestParam("numeroDocumento") String numeroDocumento
+			  								   ,@RequestParam("tipoMoeda") String tipoMoeda
+			  								   ,@RequestParam("dataInicio") String dataInicio
+			  								   ,@RequestParam("dataFim") String dataFim) {
+
+		FiltroVO filtroVO = new FiltroVO();
+		filtroVO.setNumeroDocumento(numeroDocumento.equals("null") ? null : numeroDocumento);
+		filtroVO.setTipoMoeda(tipoMoeda);
+		
+		SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+
+		try {
+			Date dtinicio = dataInicio.equals("null") ? null : format.parse(dataInicio);
+			filtroVO.setDataInicio(dtinicio);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+	
+		try {
+			Date dtFim = dataFim.equals("null") ? null : format.parse(dataFim);
+			filtroVO.setDataFim(dtFim);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}		
+
 		List<ResultadoVO> resultados = this.services.filtrarPorCriterios(filtroVO);
 		return resultados;
 	}
