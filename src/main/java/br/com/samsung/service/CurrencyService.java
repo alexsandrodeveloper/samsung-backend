@@ -21,17 +21,20 @@ import br.com.samsung.enums.CurrencyEnum;
 public class CurrencyService {
 
 	private RestTemplate restTemplate = new RestTemplate();
+	private List<CurrencyVO> currencies = new ArrayList<CurrencyVO>();
 
 	public List<CurrencyVO> findCurrencies() {
 
-		ResponseEntity<List<CurrencyVO>> currencyResponse = restTemplate.exchange(
-				"https://cellolatam.cellologistics.com.br/sds-devs-evaluation/evaluation/currency", HttpMethod.GET,
-				null, new ParameterizedTypeReference<List<CurrencyVO>>() {
-				});
-		List<CurrencyVO> currencies = currencyResponse.getBody();
+		if (currencies.isEmpty()) {
+			ResponseEntity<List<CurrencyVO>> currencyResponse = restTemplate.exchange(
+					"https://cellolatam.cellologistics.com.br/sds-devs-evaluation/evaluation/currency", HttpMethod.GET,
+					null, new ParameterizedTypeReference<List<CurrencyVO>>() {
+					});
 
-		return currencies;
+			this.currencies = currencyResponse.getBody();
+		}
 
+		return this.currencies;
 	}
 
 	private List<CotacaoCurrencyVO> findCotacoesCurrency() {

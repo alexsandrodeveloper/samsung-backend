@@ -52,7 +52,7 @@ public class CurrencyController {
 
 		FiltroVO filtroVO = new FiltroVO();
 		filtroVO.setNumeroDocumento(numeroDocumento.equals("null") ? null : numeroDocumento);
-		filtroVO.setTipoMoeda(tipoMoeda);
+		filtroVO.setTipoMoeda(tipoMoeda.equals("null") ? null : tipoMoeda);
 		
 		SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
 
