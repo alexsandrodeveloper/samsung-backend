@@ -1,7 +1,14 @@
 package br.com.samsung.config;
 
+import java.util.Arrays;
 import java.util.List;
 
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.cache.concurrent.ConcurrentMapCache;
+import org.springframework.cache.support.SimpleCacheManager;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -12,6 +19,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import br.com.samsung.serialization.converter.YamlJackson2HttpMessageConverter;
 
 @Configuration
+@EnableCaching
 public class WebConfig implements WebMvcConfigurer {
 
 	private static final MediaType MEDIA_TYPE = MediaType.valueOf("application/x-yaml");
@@ -49,4 +57,12 @@ public class WebConfig implements WebMvcConfigurer {
 				.mediaType("json", MediaType.APPLICATION_JSON).mediaType("xml", MediaType.APPLICATION_XML)
 				.mediaType("x-yaml", MEDIA_TYPE);
 	}
+	
+	@Bean
+    public CacheManager cacheManager() {
+       SimpleCacheManager cacheManager = new SimpleCacheManager();
+       Cache cache = new ConcurrentMapCache("currency");
+       cacheManager.setCaches(Arrays.asList(cache));
+       return cacheManager;
+    }
 }

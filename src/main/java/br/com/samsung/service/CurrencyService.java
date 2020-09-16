@@ -4,6 +4,8 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -17,12 +19,14 @@ import br.com.samsung.data.vo.v1.FiltroVO;
 import br.com.samsung.data.vo.v1.ResultadoVO;
 import br.com.samsung.enums.CurrencyEnum;
 
+@CacheConfig(cacheNames={"currency"})
 @Service
 public class CurrencyService {
 
 	private RestTemplate restTemplate = new RestTemplate();
 	private List<CurrencyVO> currencies = new ArrayList<CurrencyVO>();
 
+	@Cacheable
 	public List<CurrencyVO> findCurrencies() {
 
 		if (currencies.isEmpty()) {
